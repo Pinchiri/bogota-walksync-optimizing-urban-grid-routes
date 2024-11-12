@@ -1,4 +1,6 @@
-from src.datastructures.Vertex import Vertex
+from typing import TYPE_CHECKING 
+if TYPE_CHECKING:   
+  from .Vertex import Vertex
 
 class Edge:
   def __init__(self, first_vertex: 'Vertex', second_vertex: 'Vertex', weight: int, name: str):
@@ -15,6 +17,9 @@ class Edge:
   
   def get_weight(self):
     return self.__weight
+  
+  def get_name(self):
+    return self.__name
   
   def __str__(self):
     return str(self.__name)+ " (" + str(self.__weight) + ") " + " -> " + str(self.__second_vertex) + ", " + str(self.__second_vertex)  

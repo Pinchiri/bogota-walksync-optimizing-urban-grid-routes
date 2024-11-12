@@ -1,4 +1,6 @@
-from src.datastructures.Edge import Edge
+from typing import TYPE_CHECKING 
+if TYPE_CHECKING: 
+    from .Edge import Edge
 
 class Vertex:
     def __init__(self, id: int, name: str):
