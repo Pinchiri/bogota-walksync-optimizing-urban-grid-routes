@@ -6,8 +6,7 @@ from datastructures.Graph import Graph
 
 def main():
     while True:
-        vertex_id_counter = 0
-        # Example usage
+
         javier_graph = create_javier_graph()
         javier_graph.print_horizontal_edges()
         javier_graph.print_vertical_edges()
@@ -55,24 +54,24 @@ def create_andreina_graph() -> "Graph":
 
 
 def create_graph_vertices(graph: "Graph"):
-    for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
-        for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
-            vertex = Vertex(vertex_id=(street, avenue), name=f"C{street} -- C{avenue}")
+    for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
+        for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
+            vertex = Vertex(vertex_id=(avenue, street), name=f"C{avenue} -- C{street}")
             graph.add_vertex(vertex)
 
 
 def create_graph_edges(
     graph: "Graph", speed: int, speed_bad_shape: int, speed_c51: int
 ):
-    for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
-        for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
-            v1 = graph.find_vertex(vertex_id=(street, avenue))
+    for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
+        for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
+            v1 = graph.find_vertex(vertex_id=(avenue, street))
 
             # Horizontal edges
-            if avenue < LAST_AVENUE:
-                v2 = graph.find_vertex(vertex_id=(street, avenue + 1))
-                weight = speed_c51 if street == HIGH_TRAFFIC_STREET else speed
-                edge_name = f"C{street} - C{avenue} to C{avenue + 1}"
+            if street < LAST_STREET:
+                v2 = graph.find_vertex(vertex_id=(avenue, street + 1))
+                weight = speed_c51 if avenue == HIGH_TRAFFIC_AVENUE else speed
+                edge_name = f"C{avenue} - C{street} to C{street + 1}"
                 graph.add_edge(
                     Edge(
                         first_vertex=v1,
@@ -85,12 +84,12 @@ def create_graph_edges(
                 )
 
             # Vertical edges
-            if street < LAST_STREET:
-                v2 = graph.find_vertex(vertex_id=(street + 1, avenue))
+            if avenue < LAST_AVENUE:
+                v2 = graph.find_vertex(vertex_id=(avenue + 1, street))
                 weight = (
-                    speed_bad_shape if avenue >= BEGINNING_AVENUE_BAD_SHAPE else speed
+                    speed_bad_shape if street >= BEGINNING_STREET_BAD_SHAPE else speed
                 )
-                edge_name = f"C{street} to C{street + 1} - C{avenue}"
+                edge_name = f"C{avenue} to C{avenue + 1} - C{street}"
                 graph.add_edge(
                     Edge(
                         first_vertex=v1,
