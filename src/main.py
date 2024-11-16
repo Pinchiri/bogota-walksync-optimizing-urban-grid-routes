@@ -1,6 +1,7 @@
 from typing import Tuple
 from utils.constants import *
 from GraphManager import GraphManager
+import customtkinter
 
 
 def main():

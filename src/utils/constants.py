@@ -32,7 +32,7 @@ MI_ROLITA_BREWERY = (50, 12)
 JAVIER_HOME_STR = "Javier's Home"
 ANDREINA_HOME_STR = "Andreina's Home"
 THE_DARKNESS_CLUB_STR = "The Darkness Club"
-LA_PASION_BAR_STR = "La Pasion Bar"
+LA_PASION_BAR_STR = "Bar La Pasión"
 MI_ROLITA_BREWERY_STR = "Mi Rolita Brewery"
 
 LOCATION_MAP = {

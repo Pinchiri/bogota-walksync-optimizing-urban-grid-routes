@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from .Vertex import Vertex
@@ -11,8 +11,8 @@ class Edge:
         second_vertex: "Vertex",
         weight: int,
         name: str,
-        type_int: int,
-        type_name: str,
+        type_int: Literal[0, 1],
+        type_name: Literal["Horizontal", "Vertical"],
     ):
         self.__first_vertex = first_vertex
         self.__second_vertex = second_vertex
