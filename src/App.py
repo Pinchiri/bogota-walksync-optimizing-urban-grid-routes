@@ -1,11 +1,14 @@
-from typing import Literal
+from typing import Dict, Literal, Tuple
 import customtkinter
 from utils.helpers import create_custom_font
 from utils.uiconstants import *
 from utils.constants import *
 from presentation.basecomponents.Button import Button
 from presentation.basecomponents.Label import Label
-from presentation.chooselocation.ChooseLocationComposable import ChooseLocationComposable
+from presentation.chooselocation.ChooseLocationComposable import (
+    ChooseLocationComposable,
+)
+from GraphManager import GraphManager
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("green")
@@ -16,6 +19,16 @@ class App(customtkinter.CTk):
         super().__init__()
         self.setup_window()
 
+        graph_manager = GraphManager()
+        javier_graph, andreina_graph = graph_manager.initialize_graphs()
+
+        javier_shortest_paths = javier_graph.dijkstra(
+            javier_graph.find_vertex(JAVIER_HOME)
+        )
+
+        andreina_shortest_paths = andreina_graph.dijkstra(
+            andreina_graph.find_vertex(ANDREINA_HOME)
+        )
 
         main_title = Label(
             master=self,
@@ -26,13 +39,21 @@ class App(customtkinter.CTk):
             pady=15,
             font=create_custom_font(font_size=FONT_SIZE_TITLE, weight=FONT_WEIGHT_BOLD),
         )
-        
-        self.choose_location_composable()
 
-    def choose_location_composable(self):
+        self.choose_location_composable(
+            graph_manager=graph_manager,
+            javier_shortest_paths=javier_shortest_paths,
+            andreina_shortest_paths=andreina_shortest_paths,
+        )
+
+    def choose_location_composable(
+        self,
+        graph_manager: "GraphManager",
+        javier_shortest_paths: Dict[int, Tuple[int, list]],
+        andreina_shortest_paths: Dict[int, Tuple[int, list]],
+    ):
         choose_locations_frame = ChooseLocationComposable(master=self)
         choose_locations_frame.grid(row=1, column=0, padx=30, pady=30, sticky="new")
-        
 
     def setup_window(self):
         self.title(TITLE)
@@ -40,6 +61,7 @@ class App(customtkinter.CTk):
 
     def run(self):
         self.mainloop()
+
 
 if __name__ == "__main__":
     app = App()

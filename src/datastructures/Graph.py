@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Dict, Tuple
-import heapq
+
+from datastructures.BinaryHeap import BinaryHeap
 
 if TYPE_CHECKING:
     from .Vertex import Vertex
@@ -58,26 +59,25 @@ class Graph:
     def dijkstra(self, start_vertex: "Vertex") -> Dict[int, Tuple[int, list]]:
         """
         Implements Dijkstra's algorithm to find the shortest path from the start vertex to all other vertices.
-        Returns a dictionary with vertex IDs as keys and a tuple (distance, path) as values.
+        Returns a dictionary with vertex Tuple IDs as keys and a Tuple (distance, path) as values.
         """
-        # Priority queue for vertices to explore
-        queue = [(0, start_vertex.get_vertex_id(), [])]  # (distance, vertex_id, path)
-        times = {
-            vertex_id: float("inf") for vertex_id in self.__vertices
-        }  # Set all distances to infinity
-        previous_vertices = {
-            vertex_id: None for vertex_id in self.__vertices
-        }  # To reconstruct the path
-        times[start_vertex.get_vertex_id()] = 0  # Distance to start vertex is 0
+        bheap = BinaryHeap()
+        bheap.heappush(
+            (0, start_vertex.get_vertex_id(), [])  # (distance, vertex_id, path)
+        )
 
-        while queue:
+        times = {vertex_id: float("inf") for vertex_id in self.__vertices}
+        previous_vertices = {vertex_id: None for vertex_id in self.__vertices}
+        times[start_vertex.get_vertex_id()] = 0
+
+        while bheap:
             # Pop the vertex with the smallest distance
-            current_time, current_vertex_id, path = heapq.heappop(queue)
+            current_time, current_vertex_id, path = bheap.heappop()
 
             if current_time > times[current_vertex_id]:
                 continue
 
-            # Reconstruct the path for the current vertex
+            # Update the path for the current vertex
             new_path = path + [current_vertex_id]
 
             # Check all neighbors of the current vertex
@@ -88,9 +88,9 @@ class Graph:
                 if time < times[neighbor_id]:
                     times[neighbor_id] = time
                     previous_vertices[neighbor_id] = current_vertex_id
-                    heapq.heappush(queue, (time, neighbor_id, new_path))
+                    bheap.heappush((time, neighbor_id, new_path))
 
-        # Reconstruct the paths
+        # Reconstruct the shortest paths
         shortest_paths = {}
         for vertex_id in self.__vertices:
             if times[vertex_id] != float("inf"):
