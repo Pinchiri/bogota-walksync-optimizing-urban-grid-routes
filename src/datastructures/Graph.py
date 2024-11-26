@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Dict, Tuple
+from xml.sax.saxutils import prepare_input_source
 
 from datastructures.BinaryHeap import BinaryHeap
 
@@ -9,8 +10,10 @@ if TYPE_CHECKING:
 
 class Graph:
     def __init__(self, size: int):
-        self.__adj_matrix = {}  # Adjacency Matrix
-        self.__vertices = {}
+        self.__adj_matrix: Dict[Tuple[int, int], Dict[Tuple[int, int], int]] = (
+            {}
+        )  # Adjacency Matrix
+        self.__vertices: Dict[Tuple[int, int], "Vertex"] = {}
         self.__size = size
 
     def add_vertex(self, vertex: "Vertex"):
@@ -84,7 +87,7 @@ class Graph:
             for neighbor_id, weight in self.__adj_matrix[current_vertex_id].items():
                 time = current_time + weight
 
-                # If a shorter path is found, update the distance and queue
+                # If a shorter path is found, update the distance and heap
                 if time < times[neighbor_id]:
                     times[neighbor_id] = time
                     previous_vertices[neighbor_id] = current_vertex_id
@@ -102,7 +105,9 @@ class Graph:
         return shortest_paths
 
     def _reconstruct_path(
-        self, previous_vertices: Dict[int, int], vertex_id: int
+        self,
+        previous_vertices: Dict[Tuple[int, int], Tuple[int, int]],
+        vertex_id: Tuple[int, int],
     ) -> list:
         """Reconstructs the shortest path to a vertex."""
         path = []

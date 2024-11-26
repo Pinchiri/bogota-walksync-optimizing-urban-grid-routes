@@ -37,16 +37,16 @@ class GraphManager:
         self.javier_time, self.javier_path = self.javier_shortest_paths[
             THE_DARKNESS_CLUB
         ]
-        self.andreina_time, self.brewery_to_andreina_path = self.club_shortest_paths[
+        self.andreina_time, self.club_to_andreina_path = self.club_shortest_paths[
             ANDREINA_HOME
         ]
-        self.brewery_to_andreina_path.reverse()
+        andreina_path = list(reversed(self.club_to_andreina_path))
 
         club_results = self.get_walk_results_str(
             javier_time=self.javier_time,
             andreina_time=self.andreina_time,
             javier_path=self.javier_path,
-            andreina_path=self.brewery_to_andreina_path,
+            andreina_path=andreina_path,
         )
 
         return club_results
@@ -55,16 +55,16 @@ class GraphManager:
         self.javier_time, self.javier_path = self.javier_shortest_paths[
             MI_ROLITA_BREWERY
         ]
-        self.andreina_time, self.brewery_to_andreina_path = self.brewery_shortest_paths[
+        self.andreina_time, self.club_to_andreina_path = self.brewery_shortest_paths[
             ANDREINA_HOME
         ]
-        self.brewery_to_andreina_path.reverse()
+        andreina_path = list(reversed(self.club_to_andreina_path))
 
         brewery_results = self.get_walk_results_str(
             javier_time=self.javier_time,
             andreina_time=self.andreina_time,
             javier_path=self.javier_path,
-            andreina_path=self.brewery_to_andreina_path,
+            andreina_path=andreina_path,
         )
 
         return brewery_results
@@ -95,7 +95,6 @@ class GraphManager:
         else:
             results_str += "Both have to leave at the same time\n"
 
-        print(results_str)
         return results_str
 
     def calculate_time_difference(self, javier_time: int, andreina_time: int) -> int:

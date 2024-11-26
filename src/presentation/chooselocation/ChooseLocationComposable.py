@@ -7,18 +7,20 @@ from GraphManager import GraphManager
 from utils.uiconstants import *
 from utils.constants import *
 from utils.helpers import *
-from presentation.graphvisualizer.GraphVisualizerComposable import GraphVisualizerComposable
+from presentation.graphvisualizer.GraphVisualizerComposable import (
+    GraphVisualizerComposable,
+)
 
 
 class ChooseLocationComposable(customtkinter.CTkFrame):
     def __init__(
         self,
         master,
-        graph_manager: "GraphManager",        
+        graph_manager: "GraphManager",
     ):
         super().__init__(master)
-        self.view_model = ChooseLocationViewModel(graph_manager=graph_manager)                
-        #self.graph_visualizer = GraphVisualizerComposable(master=self, graph_manager=graph_manager)
+        self.view_model = ChooseLocationViewModel(graph_manager=graph_manager)
+        # self.graph_visualizer = GraphVisualizerComposable(master=self, graph_manager=graph_manager)
 
         self.choose_label = Label(
             master=self,
@@ -46,7 +48,7 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
             pady=10,
             font=create_custom_font(
                 font_size=FONT_SIZE_NORMAL, weight=FONT_WEIGHT_BOLD
-            ),            
+            ),
         )
 
     def location_buttons(self):
@@ -95,7 +97,7 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
     def choose_bar_command(self):
         self.view_model.calculate_bar_walk_results()
         self.update_results_label(results=self.view_model.bar_results)
-        
+
         javier_path = self.view_model.graph_manager.javier_path
         andreina_path = self.view_model.graph_manager.andreina_path
         self.visualize_graph_composable(javier_path, andreina_path)
@@ -103,9 +105,9 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
     def choose_club_command(self):
         self.view_model.calculate_club_walk_results()
         self.update_results_label(results=self.view_model.club_results)
-        
+
         javier_path = self.view_model.graph_manager.javier_path
-        andreina_path = self.view_model.graph_manager.brewery_to_andreina_path
+        andreina_path = self.view_model.graph_manager.club_to_andreina_path
         self.visualize_graph_composable(javier_path, andreina_path)
 
     def choose_brewery_command(self):
@@ -113,13 +115,18 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
         self.update_results_label(results=self.view_model.brewery_results)
 
         javier_path = self.view_model.graph_manager.javier_path
-        andreina_path = self.view_model.graph_manager.brewery_to_andreina_path
+        andreina_path = self.view_model.graph_manager.club_to_andreina_path
         self.visualize_graph_composable(javier_path, andreina_path)
 
     def update_results_label(self, results: str):
         self.results_label.configure(text=results)
-        self.results_label.update()    
-    
-    def visualize_graph_composable(self, javier_path, andreina_path):              
-        graph_visualizer = GraphVisualizerComposable(master=self, graph_manager=self.view_model.graph_manager, javier_path=javier_path, andreina_path=andreina_path)     
-        graph_visualizer.grid(row=2, column=0, padx=30, pady=30, sticky="new")    
+        self.results_label.update()
+
+    def visualize_graph_composable(self, javier_path, andreina_path):
+        graph_visualizer = GraphVisualizerComposable(
+            master=self,
+            graph_manager=self.view_model.graph_manager,
+            javier_path=javier_path,
+            andreina_path=andreina_path,
+        )
+        graph_visualizer.grid(row=2, column=0, padx=30, pady=30, sticky="new")

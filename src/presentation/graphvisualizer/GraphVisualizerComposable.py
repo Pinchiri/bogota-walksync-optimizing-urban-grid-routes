@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import customtkinter
 import networkx as nx
+from GraphManager import GraphManager
 
 # Ubicaciones importantes con colores y nombres
 IMPORTANT_LOCATIONS = {
@@ -12,15 +13,20 @@ IMPORTANT_LOCATIONS = {
     (50, 12): ("Mi Rolita Brewery", "purple"),
 }
 
+
 class GraphVisualizerComposable(customtkinter.CTkFrame):
-    def __init__(self, master, graph_manager: "GraphManager", javier_path=None, andreina_path=None):
+    def __init__(
+        self,
+        master,
+        graph_manager: "GraphManager",
+        javier_path=None,
+        andreina_path=None,
+    ):
         super().__init__(master=master)
         self.graph1 = graph_manager.javier_graph
         self.graph2 = graph_manager.andreina_graph
         self.javier_path = javier_path
         self.andreina_path = andreina_path
-
-        
 
         self.setup_ui()
 
@@ -65,7 +71,10 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
         positions = {}
         for node in graph.nodes:
             x, y = node
-            positions[node] = (15 - y, x)  # Carrera define eje X, Calle define eje Y (invertido)
+            positions[node] = (
+                15 - y,
+                x,
+            )  # Carrera define eje X, Calle define eje Y (invertido)
         return positions
 
     def draw_graph(self, graph, positions, ax, path=None):
@@ -84,7 +93,9 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
         # Dibujar las ubicaciones importantes
         for loc, (name, color) in IMPORTANT_LOCATIONS.items():
             if loc in graph.nodes:
-                nx.draw_networkx_nodes(graph, positions, nodelist=[loc], node_color=color, node_size=800)
+                nx.draw_networkx_nodes(
+                    graph, positions, nodelist=[loc], node_color=color, node_size=800
+                )
 
         # Dibujar las etiquetas de los bordes
         labels = nx.get_edge_attributes(graph, "weight")
@@ -93,15 +104,31 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
         # Resaltar el camino si se proporciona
         if path:
             edges = [(path[i], path[i + 1]) for i in range(len(path) - 1)]
-            nx.draw_networkx_edges(graph, positions, edgelist=edges, edge_color="red", width=2, ax=ax)
+            nx.draw_networkx_edges(
+                graph, positions, edgelist=edges, edge_color="red", width=2, ax=ax
+            )
 
         # Añadir leyenda fuera del área del gráfico
         from matplotlib.lines import Line2D
+
         legend_elements = [
-            Line2D([0], [0], marker='o', color='w', markerfacecolor=color, markersize=10, label=name)
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="w",
+                markerfacecolor=color,
+                markersize=10,
+                label=name,
+            )
             for _, (name, color) in IMPORTANT_LOCATIONS.items()
         ]
-        ax.legend(handles=legend_elements, loc="center left", bbox_to_anchor=(1, 0.5), fontsize=10)
+        ax.legend(
+            handles=legend_elements,
+            loc="center left",
+            bbox_to_anchor=(1, 0.5),
+            fontsize=10,
+        )
 
         # Ajustar los márgenes para que la leyenda no tape el gráfico
         plt.subplots_adjust(right=0.75)
