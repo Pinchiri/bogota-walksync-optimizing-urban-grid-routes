@@ -3,14 +3,15 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import customtkinter
 import networkx as nx
 from GraphManager import GraphManager
+from utils.constants import *
 
 # Ubicaciones importantes con colores y nombres
 IMPORTANT_LOCATIONS = {
-    (54, 14): ("Javier Home", "red"),
-    (52, 13): ("Andreina Home", "green"),
-    (50, 14): ("The Darkness Club", "blue"),
-    (54, 11): ("La Pasion Bar", "orange"),
-    (50, 12): ("Mi Rolita Brewery", "purple"),
+    (54, 14): (JAVIER_HOME_STR, "blue"),
+    (52, 13): (ANDREINA_HOME_STR, "purple"),
+    (50, 14): (THE_DARKNESS_CLUB_STR, "gray"),
+    (54, 11): (LA_PASION_BAR_STR, "red"),
+    (50, 12): (MI_ROLITA_BREWERY_STR, "orange"),
 }
 
 
@@ -47,12 +48,14 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
 
         # Dibujar el primer gráfico
         fig1, ax1 = plt.subplots(figsize=(8, 5))
-        self.draw_graph(G1, positions1, ax1, self.javier_path)
+        self.draw_graph(G1, positions1, ax1, path=self.javier_path)
         ax1.set_title("Javier")  # Título del primer gráfico
 
         # Dibujar el segundo gráfico
         fig2, ax2 = plt.subplots(figsize=(8, 5))
-        self.draw_graph(G2, positions2, ax2, self.andreina_path)
+        self.draw_graph(
+            G2, positions2, ax2, path=self.andreina_path, path_color="purple"
+        )
         ax2.set_title("Andreina")  # Título del segundo gráfico
 
         # Crear los canvas para ambos gráficos
@@ -77,7 +80,7 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
             )  # Carrera define eje X, Calle define eje Y (invertido)
         return positions
 
-    def draw_graph(self, graph, positions, ax, path=None):
+    def draw_graph(self, graph, positions, ax, path=None, path_color="blue"):
         nx.draw(
             graph,
             positions,
@@ -105,7 +108,7 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
         if path:
             edges = [(path[i], path[i + 1]) for i in range(len(path) - 1)]
             nx.draw_networkx_edges(
-                graph, positions, edgelist=edges, edge_color="red", width=2, ax=ax
+                graph, positions, edgelist=edges, edge_color=path_color, width=2, ax=ax
             )
 
         # Añadir leyenda fuera del área del gráfico

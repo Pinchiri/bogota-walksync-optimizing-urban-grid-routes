@@ -18,8 +18,8 @@ class GraphManager:
         self.bar_shortest_paths: Dict[int, Tuple[int, list]] = {}
         self.andreina_path = []
         self.javier_path = []
-        self.andreina_time = 0
-        self.javier_time = 0
+        self.andreina_time = ZERO_INT
+        self.javier_time = ZERO_INT
 
     def get_bar_results(self) -> str:
         self.javier_time, self.javier_path = self.javier_shortest_paths[
@@ -194,7 +194,7 @@ class GraphManager:
                             weight=weight,
                             name=edge_name,
                             type_int=0,
-                            type_name="Horizontal",
+                            type_name=HORIZONTAL_TYPE_NAME_EDGE,
                         )
                     )
 
@@ -215,7 +215,7 @@ class GraphManager:
                             weight=weight,
                             name=edge_name,
                             type_int=1,
-                            type_name="Vertical",
+                            type_name=VERTICAL_TYPE_NAME_EDGE,
                         )
                     )
 

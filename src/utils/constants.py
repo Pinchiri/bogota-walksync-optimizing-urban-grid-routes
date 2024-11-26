@@ -27,4 +27,11 @@ THE_DARKNESS_CLUB_STR = "The Darkness Club"
 LA_PASION_BAR_STR = "Bar La Pasión"
 MI_ROLITA_BREWERY_STR = "Mi Rolita Brewery"
 
+# Edge Type Strings
+HORIZONTAL_TYPE_NAME_EDGE = "Horizontal"
+VERTICAL_TYPE_NAME_EDGE = "Vertical"
+
+# Initial Values
+ZERO_INT = 0
+
 EMPTY_STRING = ""
