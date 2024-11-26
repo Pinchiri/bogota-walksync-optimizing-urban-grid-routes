@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Dict, List, Tuple
+from Config import Config
 from utils.constants import *
 from datastructures.Vertex import Vertex
 from datastructures.Edge import Edge
@@ -6,7 +7,8 @@ from datastructures.Graph import Graph
 
 
 class GraphManager:
-    def __init__(self):
+    def __init__(self, config: "Config"):
+        self.config = config
         self.javier_graph: Graph = None
         self.andreina_graph: Graph = None
         self.andreina_shortest_paths: Dict[int, Tuple[int, list]] = {}
@@ -20,9 +22,11 @@ class GraphManager:
         self.javier_time = 0
 
     def get_bar_results(self) -> str:
-        self.javier_time, self.javier_path = self.javier_shortest_paths[LA_PASION_BAR]
+        self.javier_time, self.javier_path = self.javier_shortest_paths[
+            self.config.LA_PASION_BAR
+        ]
         self.andreina_time, self.andreina_path = self.andreina_shortest_paths[
-            LA_PASION_BAR
+            self.config.LA_PASION_BAR
         ]
         bar_results = self.get_walk_results_str(
             javier_time=self.javier_time,
@@ -35,10 +39,10 @@ class GraphManager:
 
     def get_club_results(self) -> str:
         self.javier_time, self.javier_path = self.javier_shortest_paths[
-            THE_DARKNESS_CLUB
+            self.config.THE_DARKNESS_CLUB
         ]
         self.andreina_time, self.club_to_andreina_path = self.club_shortest_paths[
-            ANDREINA_HOME
+            self.config.ANDREINA_HOME
         ]
         andreina_path = list(reversed(self.club_to_andreina_path))
 
@@ -53,10 +57,10 @@ class GraphManager:
 
     def get_brewery_results(self) -> str:
         self.javier_time, self.javier_path = self.javier_shortest_paths[
-            MI_ROLITA_BREWERY
+            self.config.MI_ROLITA_BREWERY
         ]
         self.andreina_time, self.club_to_andreina_path = self.brewery_shortest_paths[
-            ANDREINA_HOME
+            self.config.ANDREINA_HOME
         ]
         andreina_path = list(reversed(self.club_to_andreina_path))
 
@@ -111,56 +115,56 @@ class GraphManager:
 
     def calculate_shortest_paths(self):
         self.javier_shortest_paths = self.javier_graph.dijkstra(
-            self.javier_graph.find_vertex(JAVIER_HOME)
+            self.javier_graph.find_vertex(self.config.JAVIER_HOME)
         )
 
         self.andreina_shortest_paths = self.andreina_graph.dijkstra(
-            self.andreina_graph.find_vertex(ANDREINA_HOME)
+            self.andreina_graph.find_vertex(self.config.ANDREINA_HOME)
         )
 
         self.club_shortest_paths = self.andreina_graph.dijkstra(
-            self.andreina_graph.find_vertex(THE_DARKNESS_CLUB)
+            self.andreina_graph.find_vertex(self.config.THE_DARKNESS_CLUB)
         )
 
         self.brewery_shortest_paths = self.javier_graph.dijkstra(
-            self.javier_graph.find_vertex(MI_ROLITA_BREWERY)
+            self.javier_graph.find_vertex(self.config.MI_ROLITA_BREWERY)
         )
 
         self.bar_shortest_paths = self.javier_graph.dijkstra(
-            self.javier_graph.find_vertex(LA_PASION_BAR)
+            self.javier_graph.find_vertex(self.config.LA_PASION_BAR)
         )
 
     def create_javier_graph(self) -> "Graph":
-        graph = Graph(GRAPH_SIZE)
+        graph = Graph(self.config.GRAPH_SIZE)
 
         self.create_graph_vertices(graph=graph)
 
         self.create_graph_edges(
             graph=graph,
-            speed=JAVIER_SPEED,
-            speed_bad_shape=JAVIER_SPEED_BAD_SHAPE,
-            speed_c51=JAVIER_SPEED_C51,
+            speed=self.config.JAVIER_SPEED,
+            speed_bad_shape=self.config.JAVIER_SPEED_BAD_SHAPE,
+            speed_c51=self.config.JAVIER_SPEED_C51,
         )
 
         return graph
 
     def create_andreina_graph(self) -> "Graph":
-        graph = Graph(GRAPH_SIZE)
+        graph = Graph(self.config.GRAPH_SIZE)
 
         self.create_graph_vertices(graph=graph)
 
         self.create_graph_edges(
             graph=graph,
-            speed=ANDREINA_SPEED,
-            speed_bad_shape=ANDREINA_SPEED_BAD_SHAPE,
-            speed_c51=ANDREINA_SPEED_C51,
+            speed=self.config.ANDREINA_SPEED,
+            speed_bad_shape=self.config.ANDREINA_SPEED_BAD_SHAPE,
+            speed_c51=self.config.ANDREINA_SPEED_C51,
         )
 
         return graph
 
     def create_graph_vertices(self, graph: "Graph"):
-        for avenue in range(FIRST_STREET, LAST_STREET + 1):
-            for street in range(FIRST_AVENUE, LAST_AVENUE + 1):
+        for avenue in range(self.config.FIRST_STREET, self.config.LAST_STREET + 1):
+            for street in range(self.config.FIRST_AVENUE, self.config.LAST_AVENUE + 1):
                 vertex_id, vertex_name = self.check_important_location(
                     avenue=avenue, street=street
                 )
@@ -170,14 +174,18 @@ class GraphManager:
     def create_graph_edges(
         self, graph: "Graph", speed: int, speed_bad_shape: int, speed_c51: int
     ):
-        for street in range(FIRST_STREET, LAST_STREET + 1):
-            for avenue in range(FIRST_AVENUE, LAST_AVENUE + 1):
+        for street in range(self.config.FIRST_STREET, self.config.LAST_STREET + 1):
+            for avenue in range(self.config.FIRST_AVENUE, self.config.LAST_AVENUE + 1):
                 v1 = graph.find_vertex(vertex_id=(street, avenue))
 
                 # Horizontal edges
-                if avenue < LAST_AVENUE:
+                if avenue < self.config.LAST_AVENUE:
                     v2 = graph.find_vertex(vertex_id=(street, avenue + 1))
-                    weight = speed_c51 if street == HIGH_TRAFFIC_STREET else speed
+                    weight = (
+                        speed_c51
+                        if street == self.config.HIGH_TRAFFIC_STREET
+                        else speed
+                    )
                     edge_name = f"C{street} - C{avenue} to C{avenue + 1}"
                     graph.add_edge(
                         Edge(
@@ -191,12 +199,12 @@ class GraphManager:
                     )
 
                 # Vertical edges
-                if street < LAST_STREET:
+                if street < self.config.LAST_STREET:
                     v2 = graph.find_vertex(vertex_id=(street + 1, avenue))
                     weight = (
                         speed_bad_shape
-                        if avenue >= BEGINNING_AVENUE_BAD_SHAPE
-                        and avenue <= END_AVENUE_BAD_SHAPE
+                        if avenue >= self.config.BEGINNING_AVENUE_BAD_SHAPE
+                        and avenue <= self.config.END_AVENUE_BAD_SHAPE
                         else speed
                     )
                     edge_name = f"C{street} to C{street + 1} - C{avenue}"
@@ -214,5 +222,5 @@ class GraphManager:
     def check_important_location(self, avenue: int, street: int) -> Tuple[int, str]:
         vertex_id = (avenue, street)
         default_name = f"C{avenue} -- C{street}"
-        vertex_name = LOCATION_MAP.get(vertex_id, default_name)
+        vertex_name = self.config.LOCATION_MAP.get(vertex_id, default_name)
         return vertex_id, vertex_name

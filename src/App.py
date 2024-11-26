@@ -1,8 +1,8 @@
 from typing import Dict, Tuple
 import customtkinter
+from Config import Config
 from utils.helpers import create_custom_font
 from utils.uiconstants import FONT_SIZE_TITLE, FONT_WEIGHT_BOLD
-from utils.constants import JAVIER_HOME, ANDREINA_HOME
 from GraphManager import GraphManager
 from presentation.basecomponents.Label import Label
 from presentation.chooselocation.ChooseLocationComposable import (
@@ -19,11 +19,13 @@ customtkinter.set_default_color_theme("green")
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+
+        self.config = Config("config.ini")
         self.setup_window()
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
 
-        graph_manager = GraphManager()
+        graph_manager = GraphManager(config=self.config)
         graph_manager.initialize_graphs()
 
         self.main_title = Label(
