@@ -30,6 +30,9 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
             ),
         )
 
+        self.location_buttons_frame = customtkinter.CTkFrame(master=self)
+        self.location_buttons_frame.grid(row=1, column=0, padx=20, pady=30, sticky="ew")
+
         self.location_buttons()
 
         self.results_label = Label(
@@ -46,10 +49,10 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
 
     def location_buttons(self):
         self.choose_bar_button = Button(
-            master=self,
+            master=self.location_buttons_frame,
             text=LA_PASION_BAR_STR,
             command=self.choose_bar_command,
-            row=1,
+            row=0,
             column=0,
             padx=20,
             pady=30,
@@ -60,10 +63,10 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
         )
 
         self.choose_club_button = Button(
-            master=self,
+            master=self.location_buttons_frame,
             text=THE_DARKNESS_CLUB_STR,
             command=self.choose_club_command,
-            row=1,
+            row=0,
             column=1,
             padx=20,
             pady=30,
@@ -74,10 +77,10 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
         )
 
         self.choose_brewery_button = Button(
-            master=self,
+            master=self.location_buttons_frame,
             text=MI_ROLITA_BREWERY_STR,
             command=self.choose_brewery_command,
-            row=1,
+            row=0,
             column=2,
             padx=20,
             pady=30,

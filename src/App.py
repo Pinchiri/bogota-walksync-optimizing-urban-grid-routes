@@ -22,7 +22,7 @@ class App(customtkinter.CTk):
         graph_manager = GraphManager()
         graph_manager.initialize_graphs()
 
-        main_title = Label(
+        self.main_title = Label(
             master=self,
             text="Bogotá WalkSync",
             row=0,
