@@ -159,8 +159,8 @@ class GraphManager:
         return graph
 
     def create_graph_vertices(self, graph: "Graph"):
-        for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
-            for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
+        for avenue in range(FIRST_STREET, LAST_STREET + 1):
+            for street in range(FIRST_AVENUE, LAST_AVENUE + 1):
                 vertex_id, vertex_name = self.check_important_location(
                     avenue=avenue, street=street
                 )
@@ -170,15 +170,15 @@ class GraphManager:
     def create_graph_edges(
         self, graph: "Graph", speed: int, speed_bad_shape: int, speed_c51: int
     ):
-        for avenue in range(GRAPH_AVENUE_LOW_LIMIT, GRAPH_AVENUE_HIGH_LIMIT):
-            for street in range(GRAPH_STREET_LOW_LIMIT, GRAPH_STREET_HIGH_LIMIT):
-                v1 = graph.find_vertex(vertex_id=(avenue, street))
+        for street in range(FIRST_STREET, LAST_STREET + 1):
+            for avenue in range(FIRST_AVENUE, LAST_AVENUE + 1):
+                v1 = graph.find_vertex(vertex_id=(street, avenue))
 
                 # Horizontal edges
-                if street < LAST_STREET:
-                    v2 = graph.find_vertex(vertex_id=(avenue, street + 1))
-                    weight = speed_c51 if avenue == HIGH_TRAFFIC_AVENUE else speed
-                    edge_name = f"C{avenue} - C{street} to C{street + 1}"
+                if avenue < LAST_AVENUE:
+                    v2 = graph.find_vertex(vertex_id=(street, avenue + 1))
+                    weight = speed_c51 if street == HIGH_TRAFFIC_STREET else speed
+                    edge_name = f"C{street} - C{avenue} to C{avenue + 1}"
                     graph.add_edge(
                         Edge(
                             first_vertex=v1,
@@ -191,14 +191,15 @@ class GraphManager:
                     )
 
                 # Vertical edges
-                if avenue < LAST_AVENUE:
-                    v2 = graph.find_vertex(vertex_id=(avenue + 1, street))
+                if street < LAST_STREET:
+                    v2 = graph.find_vertex(vertex_id=(street + 1, avenue))
                     weight = (
                         speed_bad_shape
-                        if street >= BEGINNING_STREET_BAD_SHAPE
+                        if avenue >= BEGINNING_AVENUE_BAD_SHAPE
+                        and avenue <= END_AVENUE_BAD_SHAPE
                         else speed
                     )
-                    edge_name = f"C{avenue} to C{avenue + 1} - C{street}"
+                    edge_name = f"C{street} to C{street + 1} - C{avenue}"
                     graph.add_edge(
                         Edge(
                             first_vertex=v1,
