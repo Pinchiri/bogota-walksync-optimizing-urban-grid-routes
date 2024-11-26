@@ -19,19 +19,10 @@ class App(customtkinter.CTk):
 
         self.protocol("WM_DELETE_WINDOW", self.on_close)
 
-        self.graph_manager = GraphManager()
-        self.javier_graph, self.andreina_graph = self.graph_manager.initialize_graphs()
+        graph_manager = GraphManager()
+        graph_manager.initialize_graphs()
 
-        self.javier_shortest_paths = self.javier_graph.dijkstra(
-            self.javier_graph.find_vertex(JAVIER_HOME)
-        )
-
-        self.andreina_shortest_paths = self.andreina_graph.dijkstra(
-            self.andreina_graph.find_vertex(ANDREINA_HOME)
-        )
-
-        # Título principal
-        main_title = Label(
+        self.main_title = Label(
             master=self,
             text="Bogotá WalkSync",
             row=0,
@@ -42,25 +33,31 @@ class App(customtkinter.CTk):
         )
 
         # Marco para visualizar el grafo
-        self.visualize_graph_composable()
+        self.visualize_graph_composable(graph_manager=graph_manager)
 
         # Marco para seleccionar la ubicación
-        self.choose_location_composable()   
+        self.choose_location_composable(graph_manager=graph_manager)   
 
     def on_close(self):
         # Método para manejar el cierre de la ventana correctamente        
         self.destroy()  # Destruye la ventana y limpia los recursos     
 
-    def choose_location_composable(self):
-        choose_locations_frame = ChooseLocationComposable(master=self)
-        choose_locations_frame.grid(row=2, column=0, padx=30, pady=30, sticky="new")
+    def visualize_graph_composable(self, graph_manager: "GraphManager",):
+        graph_visualizer = GraphVisualizerComposable(master=self, graph_manager=graph_manager)
+        #graph_visualizer.grid(row=2, column=0, padx=30, pady=30, sticky="nsew")
 
-    def visualize_graph_composable(self):
-        graph_visualizer = GraphVisualizerComposable(master=self, graph=self.javier_graph)
-        graph_visualizer.grid(row=1, column=0, padx=30, pady=30, sticky="nsew")
+        #graph_visualizer = GraphVisualizerComposable(master=self, graph=graph_manager.andreina_graph)
+        graph_visualizer.grid(row=2, column=0, padx=30, pady=30, sticky="new")        
+       
 
-        #graph_visualizer = GraphVisualizerComposable(master=self, graph=self.andreina_graph)
-        #graph_visualizer.grid(row=1, column=1, padx=30, pady=30, sticky="nsew")
+    def choose_location_composable(
+        self,
+        graph_manager: "GraphManager",        
+    ):
+        choose_locations_frame = ChooseLocationComposable(
+            master=self, graph_manager=graph_manager
+        )
+        choose_locations_frame.grid(row=1, column=0, padx=30, pady=30, sticky="new")
 
     def setup_window(self):
         self.title("Bogotá WalkSync")

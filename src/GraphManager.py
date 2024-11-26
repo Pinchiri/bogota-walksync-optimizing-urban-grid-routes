@@ -1,5 +1,4 @@
-from typing import TYPE_CHECKING, Tuple
-from typing import Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple
 from utils.constants import *
 from datastructures.Vertex import Vertex
 from datastructures.Edge import Edge
@@ -8,27 +7,96 @@ from datastructures.Graph import Graph
 
 class GraphManager:
     def __init__(self):
-        pass
+        self.javier_graph: Graph = None
+        self.andreina_graph: Graph = None
+        self.andreina_shortest_paths: Dict[int, Tuple[int, list]] = {}
+        self.javier_shortest_paths: Dict[int, Tuple[int, list]] = {}
+        self.club_shortest_paths: Dict[int, Tuple[int, list]] = {}
+        self.brewery_shortest_paths: Dict[int, Tuple[int, list]] = {}
+        self.bar_shortest_paths: Dict[int, Tuple[int, list]] = {}
+        self.andreina_path = []
+        self.javier_path = []
+        self.andreina_time = 0
+        self.javier_time = 0
+
+    def get_bar_results(self) -> str:
+        self.javier_time, self.javier_path = self.javier_shortest_paths[LA_PASION_BAR]
+        self.andreina_time, self.andreina_path = self.andreina_shortest_paths[
+            LA_PASION_BAR
+        ]
+        bar_results = self.get_walk_results_str(
+            javier_time=self.javier_time,
+            andreina_time=self.andreina_time,
+            javier_path=self.javier_path,
+            andreina_path=self.andreina_path,
+        )
+
+        return bar_results
+
+    def get_club_results(self) -> str:
+        self.javier_time, self.javier_path = self.javier_shortest_paths[
+            THE_DARKNESS_CLUB
+        ]
+        self.andreina_time, self.brewery_to_andreina_path = self.club_shortest_paths[
+            ANDREINA_HOME
+        ]
+        self.brewery_to_andreina_path.reverse()
+
+        club_results = self.get_walk_results_str(
+            javier_time=self.javier_time,
+            andreina_time=self.andreina_time,
+            javier_path=self.javier_path,
+            andreina_path=self.brewery_to_andreina_path,
+        )
+
+        return club_results
+
+    def get_brewery_results(self) -> str:
+        self.javier_time, self.javier_path = self.javier_shortest_paths[
+            MI_ROLITA_BREWERY
+        ]
+        self.andreina_time, self.brewery_to_andreina_path = self.brewery_shortest_paths[
+            ANDREINA_HOME
+        ]
+        self.brewery_to_andreina_path.reverse()
+
+        brewery_results = self.get_walk_results_str(
+            javier_time=self.javier_time,
+            andreina_time=self.andreina_time,
+            javier_path=self.javier_path,
+            andreina_path=self.brewery_to_andreina_path,
+        )
+
+        return brewery_results
 
     def get_walk_results_str(
         self,
         javier_time: int,
         andreina_time: int,
-        javier_path: list,
-        andreina_path: list,
-    ):
+        javier_path: List[Tuple[int, int]],
+        andreina_path: List[Tuple[int, int]],
+    ) -> str:
         time_difference = self.calculate_time_difference(javier_time, andreina_time)
-        print(f"Javier's time: {javier_time} minutes")
-        print(f"Andreina's time: {andreina_time} minutes")
-        print(f"Javier's path: {self.get_path_str(javier_path)}")
-        print(f"Andreina's path: {self.get_path_str(andreina_path)}")
-        print(f"Time difference: {abs(time_difference)} minutes")
+
+        results_str = f"""
+        Javier's time: {javier_time} minutes
+        Andreina's time: {andreina_time} minutes
+        Javier's path: {self.get_path_str(javier_path)}
+        Andreina's path: {self.get_path_str(andreina_path)}
+        Time difference: {abs(time_difference)} minutes
+        """
+
         if time_difference > 0:
-            print(f"Javier has to leave {time_difference} minutes earlier")
+            results_str += f"Javier has to leave {time_difference} minutes earlier\n"
         elif time_difference < 0:
-            print(f"Andreina has to leave {abs(time_difference)} minutes earlier")
+            results_str += (
+                f"Andreina has to leave {abs(time_difference)} minutes earlier\n"
+            )
         else:
-            print("Both have to leave at the same time")
+            results_str += "Both have to leave at the same time\n"
+
+        print(results_str)
+        return results_str
 
     def calculate_time_difference(self, javier_time: int, andreina_time: int) -> int:
         return javier_time - andreina_time
@@ -37,10 +105,31 @@ class GraphManager:
         return " -> ".join(map(str, path))
 
     def initialize_graphs(self) -> Tuple["Graph", "Graph"]:
-        javier_graph = self.create_javier_graph()
-        andreina_graph = self.create_andreina_graph()
+        self.javier_graph = self.create_javier_graph()
+        self.andreina_graph = self.create_andreina_graph()
+        self.calculate_shortest_paths()
+        return self.javier_graph, self.andreina_graph
 
-        return javier_graph, andreina_graph
+    def calculate_shortest_paths(self):
+        self.javier_shortest_paths = self.javier_graph.dijkstra(
+            self.javier_graph.find_vertex(JAVIER_HOME)
+        )
+
+        self.andreina_shortest_paths = self.andreina_graph.dijkstra(
+            self.andreina_graph.find_vertex(ANDREINA_HOME)
+        )
+
+        self.club_shortest_paths = self.andreina_graph.dijkstra(
+            self.andreina_graph.find_vertex(THE_DARKNESS_CLUB)
+        )
+
+        self.brewery_shortest_paths = self.javier_graph.dijkstra(
+            self.javier_graph.find_vertex(MI_ROLITA_BREWERY)
+        )
+
+        self.bar_shortest_paths = self.javier_graph.dijkstra(
+            self.javier_graph.find_vertex(LA_PASION_BAR)
+        )
 
     def create_javier_graph(self) -> "Graph":
         graph = Graph(GRAPH_SIZE)
