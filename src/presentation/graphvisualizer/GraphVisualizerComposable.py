@@ -19,6 +19,9 @@ class GraphVisualizerComposable(customtkinter.CTkFrame):
         self.graph2 = graph_manager.andreina_graph
         self.javier_path = javier_path
         self.andreina_path = andreina_path
+
+        
+
         self.setup_ui()
 
     def setup_ui(self):

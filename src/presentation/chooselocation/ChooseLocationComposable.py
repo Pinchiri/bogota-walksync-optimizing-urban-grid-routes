@@ -38,15 +38,15 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
         self.location_buttons()
 
         self.results_label = Label(
-            master=self,
+            master=self.location_buttons_frame,
             text="",
-            row=1,
-            column=1,
+            row=0,
+            column=3,
             padx=30,
             pady=10,
             font=create_custom_font(
                 font_size=FONT_SIZE_NORMAL, weight=FONT_WEIGHT_BOLD
-            ),
+            ),            
         )
 
     def location_buttons(self):
@@ -120,9 +120,6 @@ class ChooseLocationComposable(customtkinter.CTkFrame):
         self.results_label.configure(text=results)
         self.results_label.update()    
     
-    def visualize_graph_composable(self, javier_path, andreina_path):      
-        print('aaaaaaaaaa')                
-        print(javier_path)
-        print(andreina_path)
+    def visualize_graph_composable(self, javier_path, andreina_path):              
         graph_visualizer = GraphVisualizerComposable(master=self, graph_manager=self.view_model.graph_manager, javier_path=javier_path, andreina_path=andreina_path)     
         graph_visualizer.grid(row=2, column=0, padx=30, pady=30, sticky="new")    
